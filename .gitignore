@@ -250,3 +250,9 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+/src/CACS.WebSite/Plugins/Enterprise
+/src/CACS.WebSite/Plugins/ExtjsUI
+/src/CACS.WebSite/Profiles/DatabaseInfo.config
+/src/CACS.WebSite/Profiles/GlobalSettings.config
+/src/CACS.WebSite/App_Data/InstalledPlugins.xml
+/src/CACS.WebSite/App_Data/SystemInformation.config
