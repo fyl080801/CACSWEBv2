@@ -57,8 +57,8 @@
       <HintPath>..\..\packages\Autofac.Mvc5.3.3.4\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CACSLibrary, Version=1.4.22.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CACSLibrary.1.4.22\lib\net451\CACSLibrary.dll</HintPath>
+    <Reference Include="CACSLibrary, Version=1.4.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CACSLibrary.1.4.23\lib\net451\CACSLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CACSLibrary.Autofac, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
@@ -73,8 +73,8 @@
       <HintPath>..\..\packages\CACSLibrary.WCF.1.0.5\lib\net451\CACSLibrary.WCF.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CACSLibrary.Web, Version=1.4.11.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CACSLibrary.Web.1.4.11\lib\net451\CACSLibrary.Web.dll</HintPath>
+    <Reference Include="CACSLibrary.Web, Version=1.4.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CACSLibrary.Web.1.4.12\lib\net451\CACSLibrary.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CACSLibrary.Web.Autofac, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
