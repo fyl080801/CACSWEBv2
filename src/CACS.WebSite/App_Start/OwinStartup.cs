@@ -24,7 +24,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
-[assembly: OwinStartupAttribute(typeof(CACS.WebSite.OwinStartup))]
+[assembly: OwinStartup(typeof(CACS.WebSite.OwinStartup))]
 namespace CACS.WebSite
 {
     public class OwinStartup
@@ -38,19 +38,11 @@ namespace CACS.WebSite
 
             DependencyResolver.SetResolver(new CACSDependencyResolver());
 
-            AreaRegistration.RegisterAllAreas();
-
-            //
             ModelBinders.Binders.Add(typeof(BaseModel), new CACSModelBinder());
             ControllerBuilder.Current.SetControllerFactory(new CACSControllerFactory());
 
-            //
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
             ViewConfig.Register(new EmbeddedViewVirtualPathProvider(EngineContext.Current.Resolve<IEmbeddedViewResolver>().GetEmbeddedViews()));
 
-            //
             ConfigureAuth(app);
         }
 
@@ -60,8 +52,10 @@ namespace CACS.WebSite
 
             app.CreatePerOwinContext(CreateDbContext);
             app.CreatePerOwinContext<ApplicationUserManager>(CreateUserManager);
-            app.CreatePerOwinContext<ApplicationRoleManager>(CreateRoleManager);
-            app.CreatePerOwinContext<ApplicationSignInManager>(CreateSignInManager);
+            app.CreatePerOwinContext<ApplicationRoleManager>((options, context) =>
+                new ApplicationRoleManager(new IntRoleStore(context.Get<DbContext>())));
+            app.CreatePerOwinContext<ApplicationSignInManager>((options, context) =>
+                new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication));
 
             // cookie
             app.UseCookieAuthentication(new CookieAuthenticationOptions
@@ -72,9 +66,14 @@ namespace CACS.WebSite
                 {
                     // 当用户登录时使应用程序可以验证安全戳。
                     // 这是一项安全功能，当你更改密码或者向帐户添加外部登录名时，将使用此功能。
-                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User>(
-                        validateInterval: TimeSpan.FromMinutes(globalProfile.LoginTimeout),
-                        regenerateIdentity: (manager, user) => manager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie))
+                    //OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User, int>(
+                    //    validateInterval: TimeSpan.FromMinutes(globalProfile.LoginTimeout),
+                    //    regenerateIdentityCallback: (manager, user) => manager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie),
+                    //    getUserIdCallback: (claims) =>
+                    //    {
+                    //        var id = claims.GetUserId<int>();
+                    //        return id;
+                    //    })
                 }
             });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
@@ -95,7 +94,7 @@ namespace CACS.WebSite
 
         private ApplicationUserManager CreateUserManager(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            var manager = new ApplicationUserManager(new UserStore<User>(context.Get<DbContext>()));
+            var manager = new ApplicationUserManager(new IntUserStore(context.Get<DbContext>()));
 
             manager.UserLockoutEnabledByDefault = true;
             manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -103,11 +102,11 @@ namespace CACS.WebSite
 
             // 注册双重身份验证提供程序。此应用程序使用手机和电子邮件作为接收用于验证用户的代码的一个步骤
             // 你可以编写自己的提供程序并将其插入到此处。
-            manager.RegisterTwoFactorProvider("电话代码", new PhoneNumberTokenProvider<User>
+            manager.RegisterTwoFactorProvider("电话代码", new PhoneNumberTokenProvider<User, int>
             {
                 MessageFormat = "你的安全代码是 {0}"
             });
-            manager.RegisterTwoFactorProvider("电子邮件代码", new EmailTokenProvider<User>
+            manager.RegisterTwoFactorProvider("电子邮件代码", new EmailTokenProvider<User, int>
             {
                 Subject = "安全代码",
                 BodyFormat = "你的安全代码是 {0}"
@@ -117,19 +116,9 @@ namespace CACS.WebSite
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider = new DataProtectorTokenProvider<User>(dataProtectionProvider.Create("ASP.NET Identity"));
+                manager.UserTokenProvider = new DataProtectorTokenProvider<User, int>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;
-        }
-
-        private ApplicationRoleManager CreateRoleManager(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
-        {
-            return new ApplicationRoleManager(new RoleStore<Role>(context.Get<DbContext>()));
-        }
-
-        private ApplicationSignInManager CreateSignInManager(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
-        {
-            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
     }
 }

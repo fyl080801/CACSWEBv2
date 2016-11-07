@@ -17,7 +17,9 @@ namespace CACS.Framework.Mvc
             get
             {
                 if (base.Id == null)
-                    return default(T);
+                {
+                    base.Id = default(T);
+                }
                 return (T)base.Id;
             }
             set { base.Id = value; }

@@ -1,4 +1,5 @@
 ﻿using CACS.Framework.Domain;
+using CACS.Framework.Identity;
 using CACSLibrary.Component;
 using CACSLibrary.Data;
 using CACSLibrary.Infrastructure;
@@ -16,7 +17,7 @@ using System.Threading;
 
 namespace CACS.Framework.Data
 {
-    public class CACSWebObjectContext : IdentityDbContext<User>, IDbContext
+    public class CACSWebObjectContext : IdentityDbContext<User, Role, int, UserLogin, UserRole, UserClaim>, IDbContext
     {
         static readonly ReaderWriterLockSlim LOCKER = new ReaderWriterLockSlim();
         ITransaction _transaction;

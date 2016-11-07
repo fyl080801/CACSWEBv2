@@ -15,8 +15,8 @@ namespace CACS.WebSite
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            IRoutePublisher publisher = EngineContext.Current.Resolve<IRoutePublisher>();
-            publisher.RegisterRoutes(RouteTable.Routes);
+            //IRoutePublisher publisher = EngineContext.Current.Resolve<IRoutePublisher>();
+            //publisher.RegisterRoutes(RouteTable.Routes);
 
             routes.MapRoute(
                 name: "Default",

@@ -17,7 +17,7 @@ namespace CACS.WebSite.Models.Account
 
         public string PersonalName { get; set; }
 
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         public string IpAddress { get; set; }
 

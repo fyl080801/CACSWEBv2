@@ -1,6 +1,7 @@
 ﻿using CACS.Framework.Data;
 using CACS.Framework.Identity;
 using CACS.Framework.Mvc;
+using CACS.Framework.Mvc.ModelProvider;
 using CACSLibrary.Data;
 using CACSLibrary.Infrastructure;
 using CACSLibrary.Plugin;
@@ -47,6 +48,10 @@ namespace CACS.Framework
             containerManager.RegisterDelegate<ApplicationUserManager>(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationUserManager>(), ComponentLifeStyle.LifetimeScope);
             containerManager.RegisterDelegate<ApplicationRoleManager>(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationRoleManager>(), ComponentLifeStyle.LifetimeScope);
             containerManager.RegisterDelegate<ApplicationSignInManager>(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationSignInManager>(), ComponentLifeStyle.LifetimeScope);
+
+            //model
+            containerManager.RegisterComponent<IModelProvider, DefaultModelProvider>(typeof(IModelProvider).FullName, ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterComponent<IListModelProvider, DefaultListModelProvider>(typeof(IListModelProvider).FullName, ComponentLifeStyle.LifetimeScope);
         }
 
         public EngineLevels Level

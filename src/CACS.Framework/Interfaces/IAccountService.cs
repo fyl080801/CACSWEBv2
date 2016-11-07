@@ -10,8 +10,10 @@ namespace CACS.Framework.Interfaces
     {
         ICollection<AuthorizeModel> GetAuthorizes();
 
-        ICollection<RoleAuthorizeModel> GetRoleAuthorizes(string id);
+        ICollection<RoleAuthorizeModel> GetRoleAuthorizes(int id);
 
-        ICollection<string> GetUserAuthorizes(string id);
+        ICollection<string> GetUserAuthorizes(int id);
+
+        void SetRoleAuthorizes(AuthorizeModel[] authorizes, int roleId);
     }
 }

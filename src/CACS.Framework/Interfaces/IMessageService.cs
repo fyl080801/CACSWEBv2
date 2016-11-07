@@ -14,7 +14,7 @@ namespace CACS.Framework.Interfaces
             string title,
             bool? isReaded,
             int[] typeIds,
-            string receiverId,
+            int? receiverId,
             DateTime? timeFrom,
             DateTime? timeTo,
             int pageIndex,
@@ -23,14 +23,14 @@ namespace CACS.Framework.Interfaces
 
         int GetNewMessageCount();
 
-        int GetUserNewMessageCount(string userId);
+        int GetUserNewMessageCount(int userId);
 
 
         Message GetMessageById(int messageId);
 
         Message ReadMessageById(int messageId);
 
-        void SendMessage(string title, string content, int typeId, string sender, string[] receivers);
+        void SendMessage(string title, string content, int typeId, int sender, int[] receivers);
 
         void DeleteMessages(int[] messages);
     }

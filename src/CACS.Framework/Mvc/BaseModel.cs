@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CACSLibrary.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace CACS.Framework.Mvc
     {
         public virtual object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            return bindingContext.ModelMetadata.Model;
+            return EngineContext.Current.Resolve<IModelProvider>().BuildModel(controllerContext, bindingContext);
         }
     }
 }

@@ -2,18 +2,26 @@
 using CACS.Framework.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
 namespace CACS.WebSite.Models.Account
 {
-    public class UserInfo : BaseEntityModel<string>
+    public class UserInfo : BaseEntityModel<int>
     {
         string[] _permissions;
 
+        [Required]
         public string Username { get; set; }
 
         public string PersonalName { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string Email { get; set; }
 
         public int UserType { get; set; }
 
@@ -35,7 +43,10 @@ namespace CACS.WebSite.Models.Account
             {
                 Id = domain.Id,
                 Username = domain.UserName,
-                PersonalName = domain.PersonalName
+                FirstName = domain.FirstName,
+                LastName = domain.LastName,
+                PersonalName = domain.PersonalName,
+                Email = domain.Email
             };
         }
 
@@ -44,7 +55,10 @@ namespace CACS.WebSite.Models.Account
             return new User()
             {
                 Id = this.Id,
-                UserName = this.Username
+                UserName = this.Username,
+                FirstName = this.FirstName,
+                LastName = this.LastName,
+                Email = this.Email
             };
         }
     }

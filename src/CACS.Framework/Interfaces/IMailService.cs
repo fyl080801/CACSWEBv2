@@ -10,6 +10,6 @@ namespace CACS.Framework.Interfaces
     {
         void SendMailByAddress(string[] addresses, string title, string message, bool isHtml);
 
-        void SendMail(string[] users, string title, string message, bool isHtml);
+        void SendMail(int[] users, string title, string message, bool isHtml);
     }
 }

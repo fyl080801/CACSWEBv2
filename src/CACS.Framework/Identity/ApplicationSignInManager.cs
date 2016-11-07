@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CACS.Framework.Identity
 {
-    public class ApplicationSignInManager : SignInManager<User, string>
+    public class ApplicationSignInManager : SignInManager<User, int>
     {
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager)

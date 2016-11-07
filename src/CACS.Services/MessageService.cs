@@ -23,7 +23,7 @@ namespace CACS.Services
             string title,
             bool? isReaded,
             int[] typeIds,
-            string receiverId,
+            int? receiverId,
             DateTime? timeFrom,
             DateTime? timeTo,
             int pageIndex,
@@ -112,7 +112,7 @@ namespace CACS.Services
         //    return messages;
         //}
 
-        public int GetUserNewMessageCount(string userId)
+        public int GetUserNewMessageCount(int userId)
         {
             return _messageRepository.Table.Count(m => m.ReceiverId == userId && m.ReadTime == null);
         }
@@ -135,10 +135,10 @@ namespace CACS.Services
             return message;
         }
 
-        public void SendMessage(string title, string content, int typeId, string sender, string[] receivers)
+        public void SendMessage(string title, string content, int typeId, int sender, int[] receivers)
         {
             List<Message> messages = new List<Message>();
-            foreach (string receiver in receivers)
+            foreach (int receiver in receivers)
             {
                 Message message = new Message();
                 message.Content = content;

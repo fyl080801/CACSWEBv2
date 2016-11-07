@@ -48,8 +48,8 @@ namespace CACS.Services
             };
 
             _dbContext = new CACSWebObjectContext(_dataSettingManager.LoadSettings().ConnectionString);
-            _roleManager = new ApplicationRoleManager(new RoleStore<Role>(_dbContext));
-            _userManager = new ApplicationUserManager(new UserStore<User>(_dbContext));
+            _roleManager = new ApplicationRoleManager(new IntRoleStore(_dbContext));
+            _userManager = new ApplicationUserManager(new IntUserStore(_dbContext));
 
             _roleManager.Create(role);
             _userManager.Create(admin, adminPassword);

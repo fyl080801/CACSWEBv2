@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using CACS.Framework.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CACS.Framework.Domain
 {
-    public class User : IdentityUser
+    public class User : IdentityUser<int, UserLogin, UserRole, UserClaim>
     {
         /// <summary>
         /// 名

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CACS.WebSite.Models.Account
 {
-    public class RoleModel : BaseEntityModel<string>
+    public class RoleModel : BaseEntityModel<int>
     {
         [Required]
         public string RoleName { get; set; }

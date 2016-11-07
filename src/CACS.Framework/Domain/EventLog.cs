@@ -19,7 +19,7 @@ namespace CACS.Framework.Domain
 
         public virtual DateTime EventTime { get; set; }
 
-        public virtual string UserId { get; set; }
+        public virtual int UserId { get; set; }
 
         [MaxLength(50)]
         public virtual string IpAddress { get; set; }

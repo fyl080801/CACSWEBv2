@@ -22,7 +22,7 @@ namespace CACS.Services
             _userManager = userManager;
         }
 
-        public void SendMail(string[] users, string title, string message, bool isHtml)
+        public void SendMail(int[] users, string title, string message, bool isHtml)
         {
             var query = _userManager.Users.Where(c => users.Contains(c.Id)).Select(c => c.Email).ToArray();
             SendMailByAddress(query, title, message, isHtml);

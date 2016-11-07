@@ -13,7 +13,7 @@ namespace CACS.Framework.Domain
         [Required]
         public virtual string Value { get; set; }
 
-        public virtual string UserId { get; set; }
+        public virtual int UserId { get; set; }
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }

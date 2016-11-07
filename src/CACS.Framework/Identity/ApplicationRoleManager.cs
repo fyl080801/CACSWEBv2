@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace CACS.Framework.Identity
 {
-    public class ApplicationRoleManager : RoleManager<Role>
+    public class ApplicationRoleManager : RoleManager<Role, int>
     {
         public const string Administrators = "Administrators";
 
-        public ApplicationRoleManager(IRoleStore<Role, string> store)
+        public ApplicationRoleManager(IRoleStore<Role, int> store)
             : base(store)
         { }
 

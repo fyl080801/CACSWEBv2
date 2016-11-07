@@ -19,7 +19,7 @@
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
     <Id>CACS.Framework</Id>
-    <Version>1.0.20.16</Version>
+    <Version>1.0.21.1</Version>
     <Title>CACS.Framework</Title>
     <Authors>fyl08</Authors>
     <Owners>fyl08</Owners>

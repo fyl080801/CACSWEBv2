@@ -216,6 +216,8 @@
     <Content Include="Plugins\bin\Readme.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\htpub.pubxml" />
+    <None Include="Properties\PublishProfiles\pub.pubxml" />
     <None Include="Scripts\jquery-2.2.4.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -278,7 +280,6 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
-    <None Include="Properties\PublishProfiles\pub1.pubxml" />
     <Content Include="Views\Installer\Wizard.cshtml" />
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />

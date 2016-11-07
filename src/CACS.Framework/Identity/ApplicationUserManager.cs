@@ -14,15 +14,15 @@ using System.Threading.Tasks;
 
 namespace CACS.Framework.Identity
 {
-    public class ApplicationUserManager : UserManager<User>
+    public class ApplicationUserManager : UserManager<User, int>
     {
         public const string Administrator = "admin";
 
-        public ApplicationUserManager(IUserStore<User> store)
+        public ApplicationUserManager(IUserStore<User, int> store)
             : base(store)
         {
             var settings = EngineContext.Current.Resolve<IProfileManager>().Get<IdentitySettings>();
-            this.UserValidator = new UserValidator<User>(this)
+            this.UserValidator = new UserValidator<User, int>(this)
             {
                 AllowOnlyAlphanumericUserNames = settings.AllowOnlyAlphanumericUserNames,
                 RequireUniqueEmail = settings.RequireUniqueEmail

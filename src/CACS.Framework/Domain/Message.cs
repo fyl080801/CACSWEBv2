@@ -24,12 +24,12 @@ namespace CACS.Framework.Domain
 
         public virtual MessageTypes MessageType { get; set; }
 
-        public virtual string SenderId { get; set; }
+        public virtual int SenderId { get; set; }
 
         [ForeignKey("SenderId")]
         public virtual User Sender { get; set; }
 
-        public virtual string ReceiverId { get; set; }
+        public virtual int ReceiverId { get; set; }
 
         [ForeignKey("ReceiverId")]
         public virtual User Receiver { get; set; }

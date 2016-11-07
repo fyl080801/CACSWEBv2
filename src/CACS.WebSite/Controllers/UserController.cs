@@ -2,10 +2,12 @@
 using CACS.Framework.Identity;
 using CACS.Framework.Mvc.Controllers;
 using CACS.Framework.Mvc.Filters;
+using CACS.Framework.Mvc.Models;
 using CACS.WebSite.Models.Account;
 using CACSLibrary;
 using CACSLibrary.Data;
 using CACSLibrary.Profile;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
@@ -37,14 +39,14 @@ namespace CACS.WebSite.Controllers
         }
 
 
-        public async Task<ActionResult> Details(string id)
+        public async Task<ActionResult> Details(int id)
         {
             var result = await _userManager.FindByIdAsync(id);
             return Json(UserInfo.Prepare(result));
         }
 
         [AccountTicket(AuthorizeName = "删除", Group = "用户管理")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(int id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -57,24 +59,23 @@ namespace CACS.WebSite.Controllers
             return Json(result.Succeeded);
         }
 
-        [AccountTicket(AuthorizeName = "编辑", Group = "用户管理"), HttpPost]
-        public async Task<ActionResult> Update(UserInfo model)
+        [AccountTicket(AuthorizeName = "保存", Group = "用户管理"), HttpPost]
+        public async Task<ActionResult> Save(UserInfo model)
         {
-            var result = await _userManager.UpdateAsync(model.ToDomain());
-            if (!result.Succeeded)
-                throw new CACSException(string.Join(", ", result.Errors.ToArray()));
-            return Json(model.Id);
-        }
-
-        [AccountTicket(AuthorizeName = "创建", Group = "用户管理"), HttpPost]
-        public async Task<ActionResult> Create(UserInfo model)
-        {
-            var user = new User()
+            var user = await _userManager.FindByIdAsync(model.Id);
+            IdentityResult result;
+            if (user != null)
             {
-                Id = model.Id,
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user);
+                user.Email = model.Email;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                result = await _userManager.UpdateAsync(user);
+            }
+            else
+            {
+                user = model.ToDomain();
+                result = await _userManager.CreateAsync(user, user.UserName);
+            }
             if (!result.Succeeded)
                 throw new CACSException(string.Join(", ", result.Errors.ToArray()));
             return Json(user.Id);
@@ -119,10 +120,56 @@ namespace CACS.WebSite.Controllers
                 {
                     Id = item.Id,
                     Username = item.Username,
-                    PersonalName = item.PersonalName,               
+                    PersonalName = item.PersonalName,
                 }).ToArray(),
                 users.TotalCount);
         }
+
+        [AccountTicket]
+        public ActionResult Users(ListModel model)
+        {
+            var query = _userManager.Users;
+            if (!String.IsNullOrWhiteSpace(model.Search))
+                query = query.Where(c => c.UserName.Contains(model.Search) || c.FirstName.Contains(model.Search) || c.LastName.Contains(model.Search));
+
+            if (model.Sort.Count > 0)
+            {
+                model.Sort.ForEach(sortItem =>
+                {
+                    string key = sortItem.Key;
+                    if (sortItem.Key == "Username")
+                    {
+                        key = "UserName";
+                    }
+                    else if (sortItem.Key == "PersonalName")
+                    {
+                        key = "LastName";
+                    }
+                    query = QueryBuilder.DataSorting(
+                        query,
+                        key,
+                        sortItem.Value.Equals("asc", StringComparison.InvariantCultureIgnoreCase) ? true : false);
+                });
+            }
+            else
+            {
+                query = query.OrderByDescending(m => m.LockoutEndDateUtc);
+            }
+            var users = new PagedList<User>(query, model.Page - 1, model.Limit);
+            if (users == null)
+            {
+                users = new PagedList<User>(new List<User>(), model.Page - 1, model.Limit);
+            }
+            return JsonList(
+                users.ToList().ConvertAll<UserInfo>(item => new UserInfo()
+                {
+                    Id = item.Id,
+                    Username = item.UserName,
+                    PersonalName = item.PersonalName,
+                }).ToArray(),
+                users.TotalCount);
+        }
+
         //public ActionResult SelectList(UserSelectModel model, int limit, int page, string sort, string dir)
         //{
         //    IDictionary<string, bool> dic = new Dictionary<string, bool>();

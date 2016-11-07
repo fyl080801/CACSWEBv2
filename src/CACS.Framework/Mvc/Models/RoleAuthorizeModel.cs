@@ -19,7 +19,7 @@ namespace CACS.Framework.Mvc.Models
             AuthorizeName = model.AuthorizeName;
         }
 
-        public string RoleId { get; set; }
+        public int RoleId { get; set; }
 
         public bool IsAuthorized { get; set; }
     }

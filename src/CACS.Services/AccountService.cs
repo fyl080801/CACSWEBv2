@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using System;
 
 namespace CACS.Services
 {
@@ -68,10 +69,10 @@ namespace CACS.Services
             return list.Values;
         }
 
-        public ICollection<RoleAuthorizeModel> GetRoleAuthorizes(string id)
+        public ICollection<RoleAuthorizeModel> GetRoleAuthorizes(int id)
         {
             var list = new List<RoleAuthorizeModel>();
-            var rules = _ruleRepository.Table.Where(e => e.AuthorizeId == id).ToArray();
+            var rules = _ruleRepository.Table.Where(e => e.RoleId == id).ToArray();
             var auths = GetAuthorizes();
             foreach (var auth in auths)
             {
@@ -84,7 +85,7 @@ namespace CACS.Services
             return list;
         }
 
-        public ICollection<string> GetUserAuthorizes(string id)
+        public ICollection<string> GetUserAuthorizes(int id)
         {
             var user = _userManager.Users.FirstOrDefault(e => e.Id == id);
             var administrators = _roleManager.Roles.FirstOrDefault(e => e.Name == ApplicationRoleManager.Administrators);
@@ -102,6 +103,17 @@ namespace CACS.Services
                 }
             }
             return new string[0];
+        }
+
+        public void SetRoleAuthorizes(AuthorizeModel[] authorizes, int roleId)
+        {
+            var rules = _ruleRepository.Table.Where(e => e.RoleId == roleId).ToArray();
+            _ruleRepository.Delete(rules);
+            _ruleRepository.Insert(authorizes.Select(e => new Rule()
+            {
+                AuthorizeId = e.Id,
+                RoleId = roleId
+            }).ToArray());
         }
     }
 }

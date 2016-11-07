@@ -11,7 +11,7 @@ namespace CACS.Framework.Domain
         [Required]
         public virtual string AuthorizeId { get; set; }
 
-        public virtual string RoleId { get; set; }
+        public virtual int RoleId { get; set; }
 
         [ForeignKey("RoleId")]
         public virtual Role Role { get; set; }
