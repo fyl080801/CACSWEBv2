@@ -23,6 +23,7 @@ namespace CACS.WebSite.Controllers
     {
         IProfileManager _profileManager;
         ApplicationRoleManager _roleManager;
+        ApplicationUserManager _userManager;
         IAccountService _accountService;
 
         public RoleController(
@@ -33,9 +34,9 @@ namespace CACS.WebSite.Controllers
             _profileManager = profileManager;
             _accountService = accountService;
             _roleManager = httpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            _userManager = httpContext.GetOwinContext().Get<ApplicationUserManager>();
         }
 
-        [AccountTicket(AuthorizeName = "浏览", Group = "角色管理")]
         public ActionResult List()
         {
             var query = _roleManager.Roles;
@@ -72,7 +73,8 @@ namespace CACS.WebSite.Controllers
             IdentityResult result;
             if (old != null)
             {
-                old.Name = model.RoleName;
+                if (old.Name != ApplicationRoleManager.Administrators)
+                    old.Name = model.Name;
                 old.Description = model.Description;
                 result = await _roleManager.UpdateAsync(old);
             }
@@ -92,6 +94,8 @@ namespace CACS.WebSite.Controllers
             var role = await _roleManager.FindByIdAsync(id);
             if (role == null)
                 throw new CACSException("找不到角色");
+            if (role.Name == ApplicationRoleManager.Administrators)
+                throw new CACSException("管理员角色不能删除");
 
             var result = await _roleManager.DeleteAsync(role);
 
@@ -131,7 +135,7 @@ namespace CACS.WebSite.Controllers
             return JsonList(roles.Select(RoleModel.Prepare).ToArray(), roles.TotalCount);
         }
 
-        [AccountTicket]
+        [AccountTicket(AuthorizeName = "浏览", Group = "角色管理")]
         public ActionResult Roles(ListModel model)
         {
             var query = _roleManager.Roles;
@@ -151,7 +155,7 @@ namespace CACS.WebSite.Controllers
             {
                 query = query.OrderBy(m => m.Id);
             }
-            var roles = new PagedList<Role>(query.ToList(), model.Page - 1, model.Limit);
+            var roles = new PagedList<Role>(query, model.Page - 1, model.Limit);
             if (roles == null)
             {
                 roles = new PagedList<Role>(new List<Role>(), model.Page - 1, model.Limit);
@@ -166,7 +170,7 @@ namespace CACS.WebSite.Controllers
             return JsonList<RoleAuthorizeModel>(roleAuthorizes.ToArray());
         }
 
-        [AccountTicket(AuthorizeName = "设置权限", Group = "角色管理")]
+        [AccountTicket(AuthorizeId = "/Role/Save")]
         public ActionResult SetAuthorizes(RoleAuthorizeModel[] models)
         {
             var roles = models.Select(e => e.RoleId).Distinct().ToArray();
@@ -179,7 +183,67 @@ namespace CACS.WebSite.Controllers
                     Id = a.Id
                 }).ToArray(), roleId);
             }
-            return Json("");
+            return Json(true);
+        }
+
+        [AccountTicket(AuthorizeId = "/Role/Save")]
+        public ActionResult Members(ListModel model, int id)
+        {
+            var role = _roleManager.FindById(id);
+            if (role == null)
+                throw new CACSException("找不到角色");
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(model.Search))
+                query = query.Where(m => m.FirstName.Contains(model.Search) || m.LastName.Contains(model.Search));
+            if (model.Sort.Count > 0)
+            {
+                model.Sort.ForEach(sortItem =>
+                {
+                    var order = sortItem.Value.Equals("asc", StringComparison.InvariantCultureIgnoreCase) ? true : false;
+                    if (sortItem.Key == "PersonalName")
+                    {
+                        query = QueryBuilder.DataSorting(query, "LastName", order);
+                        query = QueryBuilder.DataSorting(query, "FirstName", order);
+                    }
+                    else
+                    {
+                        query = QueryBuilder.DataSorting(query, sortItem.Key, order);
+                    }
+                });
+            }
+            else
+            {
+                query = query.OrderBy(m => m.LastName);
+            }
+            var result = new PagedList<User>(query, model.Page - 1, model.Limit) ??
+                new PagedList<User>(new List<User>(), model.Page - 1, model.Limit);
+            return JsonList(result
+                .Select(m => new RoleMemberModel()
+                {
+                    Id = m.Id,
+                    IsMember = m.Roles.Select(r => r.RoleId).ToArray().Contains(id),
+                    UserName = m.UserName,
+                    PersonalName = m.PersonalName,
+                    RoleId = id
+                }).ToArray(), result.TotalCount);
+        }
+
+        [AccountTicket(AuthorizeId = "/Role/Save")]
+        public ActionResult SetMembers(RoleMemberModel[] models, int id)
+        {
+            var domain = _roleManager.FindById(id);
+
+            var users = domain.Users.Select(e => e.UserId);
+            var newMembers = models.Where(e => e.IsMember == true && !users.Contains(e.Id));
+            var removedMembers = domain.Users.Where(e => models.Where(x => x.IsMember == false).Select(x => x.Id).ToArray().Contains(e.UserId));//models.Where(e => e.IsMember == false && users.Contains(e.Id));
+
+            newMembers.ForEach(e => domain.Users.Add(new UserRole() { UserId = e.Id, RoleId = id }));
+            removedMembers.ToList().ForEach(e => domain.Users.Remove(e));
+
+            if (domain.Name == ApplicationRoleManager.Administrators && domain.Users.Count <= 0)
+                throw new CACSException("超级管理员至少要包含一个用户");
+            _roleManager.Update(domain);
+            return Json(id);
         }
     }
 }

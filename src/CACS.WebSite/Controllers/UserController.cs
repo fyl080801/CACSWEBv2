@@ -22,6 +22,7 @@ namespace CACS.WebSite.Controllers
     {
         IProfileManager _profileManager;
         ApplicationUserManager _userManager;
+        ApplicationRoleManager _roleManager;
 
         public UserController(
             IProfileManager profileManager,
@@ -29,6 +30,7 @@ namespace CACS.WebSite.Controllers
         {
             _profileManager = profileManager;
             _userManager = httpContext.GetOwinContext().Get<ApplicationUserManager>();
+            _roleManager = httpContext.GetOwinContext().Get<ApplicationRoleManager>();
         }
 
         [AccountTicket(Group = "用户管理", AuthorizeName = "浏览")]
@@ -51,6 +53,9 @@ namespace CACS.WebSite.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
                 throw new CACSException("找不到用户");
+            var adminRole = _roleManager.FindByName(ApplicationRoleManager.Administrators);
+            if (adminRole.Users.Count <= 1 && user.Id == adminRole.Users.FirstOrDefault().UserId)
+                throw new CACSException("必须保留至少一个管理员账户");
 
             var result = await _userManager.DeleteAsync(user);
 

@@ -63,8 +63,7 @@ namespace CACS.WebSite.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var appuser = await _signinManager.UserManager.FindByNameAsync(User.Identity.Name);
-                user.Id = appuser.Id;
-                user.Username = User.Identity.Name;
+                user = UserInfo.Prepare(appuser);
                 user.Vaild = true;
 
                 var auths = _accountService.GetUserAuthorizes(appuser.Id);

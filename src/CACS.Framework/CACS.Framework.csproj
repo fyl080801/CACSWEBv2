@@ -172,8 +172,8 @@
     <Compile Include="Identity\FakeIIdentity.cs" />
     <Compile Include="Identity\FakePrincipal.cs" />
     <Compile Include="Identity\IdentitySettings.cs" />
-    <Compile Include="Identity\IntRoleStore.cs" />
-    <Compile Include="Identity\IntUserStore.cs" />
+    <Compile Include="Identity\ApplicationRoleStore.cs" />
+    <Compile Include="Identity\ApplicationUserStore.cs" />
     <Compile Include="Identity\UserClaim.cs" />
     <Compile Include="Identity\UserLogin.cs" />
     <Compile Include="Identity\UserRole.cs" />
@@ -182,6 +182,7 @@
     <Compile Include="Mvc\ModelProvider\DefaultListModelProvider.cs" />
     <Compile Include="Mvc\ModelProvider\DefaultModelProvider.cs" />
     <Compile Include="Mvc\Models\ListModel.cs" />
+    <Compile Include="Mvc\Models\RoleMemberModel.cs" />
     <Compile Include="netfx\System\Xml\XmlSerializer.cs" />
     <Compile Include="StartUpTask.cs" />
     <Compile Include="Identity\ApplicationRoleManager.cs" />

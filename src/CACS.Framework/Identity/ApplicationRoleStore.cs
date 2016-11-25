@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace CACS.Framework.Identity
 {
-    public class IntUserStore : UserStore<User, Role, int, UserLogin, UserRole, UserClaim>
+    public class ApplicationRoleStore : RoleStore<Role, int, UserRole>
     {
-        public IntUserStore(DbContext context) : base(context)
+        public ApplicationRoleStore(DbContext context) : base(context)
         {
         }
     }

@@ -41,12 +41,12 @@ namespace CACS.Framework.Mvc.ActionResults
             }
             if (this.Data != null)
             {
-                DateTimeConverterBase timeFormat = new JavaScriptDateTimeConverter();
+                //DateTimeConverterBase timeFormat = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
                 JsonSerializerSettings setting = new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = _ignoreReferenceLoop ? ReferenceLoopHandling.Ignore : ReferenceLoopHandling.Serialize,
                 };
-                setting.Converters.Add(timeFormat);
+                //setting.Converters.Add(timeFormat);
                 response.Write(JsonConvert.SerializeObject(this.Data, Formatting.Indented, setting));
             }
         }

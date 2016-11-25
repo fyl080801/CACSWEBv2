@@ -53,7 +53,7 @@ namespace CACS.WebSite
             app.CreatePerOwinContext(CreateDbContext);
             app.CreatePerOwinContext<ApplicationUserManager>(CreateUserManager);
             app.CreatePerOwinContext<ApplicationRoleManager>((options, context) =>
-                new ApplicationRoleManager(new IntRoleStore(context.Get<DbContext>())));
+                new ApplicationRoleManager(new ApplicationRoleStore(context.Get<DbContext>())));
             app.CreatePerOwinContext<ApplicationSignInManager>((options, context) =>
                 new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication));
 
@@ -66,14 +66,10 @@ namespace CACS.WebSite
                 {
                     // 当用户登录时使应用程序可以验证安全戳。
                     // 这是一项安全功能，当你更改密码或者向帐户添加外部登录名时，将使用此功能。
-                    //OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User, int>(
-                    //    validateInterval: TimeSpan.FromMinutes(globalProfile.LoginTimeout),
-                    //    regenerateIdentityCallback: (manager, user) => manager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie),
-                    //    getUserIdCallback: (claims) =>
-                    //    {
-                    //        var id = claims.GetUserId<int>();
-                    //        return id;
-                    //    })
+                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User, int>(
+                        validateInterval: TimeSpan.FromMinutes(globalProfile.LoginTimeout),
+                        regenerateIdentityCallback: (manager, user) => user.GenerateUserIdentityAsync(manager),
+                        getUserIdCallback: (claim) => int.Parse(claim.GetUserId()))
                 }
             });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
@@ -94,7 +90,7 @@ namespace CACS.WebSite
 
         private ApplicationUserManager CreateUserManager(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            var manager = new ApplicationUserManager(new IntUserStore(context.Get<DbContext>()));
+            var manager = new ApplicationUserManager(new ApplicationUserStore(context.Get<DbContext>()));
 
             manager.UserLockoutEnabledByDefault = true;
             manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);

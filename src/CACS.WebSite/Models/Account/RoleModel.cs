@@ -7,7 +7,7 @@ namespace CACS.WebSite.Models.Account
     public class RoleModel : BaseEntityModel<int>
     {
         [Required]
-        public string RoleName { get; set; }
+        public string Name { get; set; }
 
         public string Description { get; set; }
 
@@ -17,7 +17,7 @@ namespace CACS.WebSite.Models.Account
             {
                 Description = domain.Description,
                 Id = domain.Id,
-                RoleName = domain.Name
+                Name = domain.Name
             };
         }
 
@@ -27,7 +27,7 @@ namespace CACS.WebSite.Models.Account
             {
                 Id = this.Id,
                 Description = this.Description,
-                Name = this.RoleName
+                Name = this.Name
             };
         }
     }
