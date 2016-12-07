@@ -259,6 +259,8 @@
     <Compile Include="Models\Account\EventLogModel.cs" />
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Account\LogListModel.cs" />
+    <Compile Include="Models\Account\PasswordChangeModel.cs" />
+    <Compile Include="Models\Account\PasswordSetModel.cs" />
     <Compile Include="Models\Account\UserListModel.cs" />
     <Compile Include="Models\Account\UserSelectModel.cs" />
     <Compile Include="Models\Account\RoleModel.cs" />

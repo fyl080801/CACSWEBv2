@@ -11,6 +11,7 @@ using CACSLibrary.Web.EmbeddedViews;
 using CACSLibrary.Web.Routes;
 using Microsoft.AspNet.Identity.Owin;
 using System.Web;
+using System.Web.Hosting;
 
 namespace CACS.Framework
 {
@@ -19,35 +20,36 @@ namespace CACS.Framework
         public void Register(IContainerManager containerManager, ITypeFinder typeFinder)
         {
             //http
-            containerManager.RegisterDelegate<HttpContextBase>(c => HttpContext.Current != null ? (new HttpContextWrapper(HttpContext.Current) as HttpContextBase) : (new NullHttpContext("~/") as HttpContextBase), ComponentLifeStyle.LifetimeScope);
-            containerManager.RegisterDelegate<HttpRequestBase>(c => c.Resolve<HttpContextBase>().Request, ComponentLifeStyle.LifetimeScope);
-            containerManager.RegisterDelegate<HttpResponseBase>(c => c.Resolve<HttpContextBase>().Response, ComponentLifeStyle.LifetimeScope);
-            containerManager.RegisterDelegate<HttpServerUtilityBase>(c => c.Resolve<HttpContextBase>().Server, ComponentLifeStyle.LifetimeScope);
-            containerManager.RegisterDelegate<HttpSessionStateBase>(c => c.Resolve<HttpContextBase>().Session, ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => HttpContext.Current != null ? (new HttpContextWrapper(HttpContext.Current) as HttpContextBase) : (new NullHttpContext("~/") as HttpContextBase), ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => c.Resolve<HttpContextBase>().Request, ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => c.Resolve<HttpContextBase>().Response, ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => c.Resolve<HttpContextBase>().Server, ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => c.Resolve<HttpContextBase>().Session, ComponentLifeStyle.LifetimeScope);
 
             //mvc
             containerManager.RegisterComponentInstance<IRoutePublisher>(new RoutePublisher(typeFinder));
             containerManager.RegisterComponentInstance<IEmbeddedViewResolver>(new EmbeddedViewResolver(typeFinder));
+            containerManager.RegisterComponentInstance<VirtualPathProvider>(new EmbeddedViewVirtualPathProvider(containerManager.Resolve<IEmbeddedViewResolver>().GetEmbeddedViews()));
             containerManager.RegisterComponent<IWebHelper, WebHelper>(typeof(WebHelper).FullName, ComponentLifeStyle.LifetimeScope);
 
             //plugin
             if (!Singleton<IPluginManager>.IsInstanceNull)
                 EngineContext.Current.ContainerManager.RegisterComponentInstance<IPluginManager>(Singleton<IPluginManager>.Instance);
-            containerManager.RegisterComponent<IPluginFinder, PluginFinder>("", ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterComponent<IPluginFinder, PluginFinder>(typeof(PluginFinder).FullName, ComponentLifeStyle.LifetimeScope);
 
             //data
             containerManager.RegisterDelegate<IDataSettingsManager>(c => new DataSettingsManager(c.Resolve<IProfileManager>()), ComponentLifeStyle.Singleton);
             containerManager.RegisterDelegate<BaseDataProviderManager>(c => new WebEfDataProviderManager(c.Resolve<IDataSettingsManager>().LoadSettings()), ComponentLifeStyle.Singleton);
-            containerManager.RegisterDelegate<IDataProvider>(c => c.Resolve<BaseDataProviderManager>().LoadDataProvider(), ComponentLifeStyle.Singleton);
-            containerManager.RegisterDelegate<IEfDataProvider>(c => c.Resolve<BaseDataProviderManager>().LoadDataProvider() as IEfDataProvider);
+            containerManager.RegisterDelegate(c => c.Resolve<BaseDataProviderManager>().LoadDataProvider(), ComponentLifeStyle.Singleton);
+            containerManager.RegisterDelegate(c => c.Resolve<BaseDataProviderManager>().LoadDataProvider() as IEfDataProvider);
             containerManager.Resolve<IEfDataProvider>().InitConnectionFactory();
             containerManager.RegisterComponent<IDbContext, CACSWebObjectContext>(typeof(CACSWebObjectContext).FullName, ComponentLifeStyle.LifetimeScope);
             containerManager.RegisterComponent(typeof(IRepository<>), typeof(EfRepository<>), typeof(EfRepository<>).FullName, ComponentLifeStyle.LifetimeScope);
 
             //account
-            containerManager.RegisterDelegate<ApplicationUserManager>(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationUserManager>(), ComponentLifeStyle.LifetimeScope);
-            containerManager.RegisterDelegate<ApplicationRoleManager>(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationRoleManager>(), ComponentLifeStyle.LifetimeScope);
-            containerManager.RegisterDelegate<ApplicationSignInManager>(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationSignInManager>(), ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationUserManager>(), ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationRoleManager>(), ComponentLifeStyle.LifetimeScope);
+            containerManager.RegisterDelegate(c => c.Resolve<HttpContextBase>().GetOwinContext().Get<ApplicationSignInManager>(), ComponentLifeStyle.LifetimeScope);
 
             //model
             containerManager.RegisterComponent<IModelProvider, DefaultModelProvider>(typeof(IModelProvider).FullName, ComponentLifeStyle.LifetimeScope);

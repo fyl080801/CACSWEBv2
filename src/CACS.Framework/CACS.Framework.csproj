@@ -171,6 +171,7 @@
     <Compile Include="Domain\User.cs" />
     <Compile Include="Identity\FakeIIdentity.cs" />
     <Compile Include="Identity\FakePrincipal.cs" />
+    <Compile Include="Identity\IdentityExtensions.cs" />
     <Compile Include="Identity\IdentitySettings.cs" />
     <Compile Include="Identity\ApplicationRoleStore.cs" />
     <Compile Include="Identity\ApplicationUserStore.cs" />

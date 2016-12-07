@@ -10,11 +10,11 @@ namespace CACS.Framework.Mvc.Models
 {
     public class ListModel : BaseModel
     {
-        public string Search { get; set; }
+        public string Search { get; set; } = "";
 
-        public int Limit { get; set; }
+        public int Limit { get; set; } = 0;
 
-        public int Page { get; set; }
+        public int Page { get; set; } = 0;
 
         public Dictionary<string, string> Sort { get; set; } = new Dictionary<string, string>();
 

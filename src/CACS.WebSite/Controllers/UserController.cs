@@ -174,22 +174,5 @@ namespace CACS.WebSite.Controllers
                 }).ToArray(),
                 users.TotalCount);
         }
-
-        //public ActionResult SelectList(UserSelectModel model, int limit, int page, string sort, string dir)
-        //{
-        //    IDictionary<string, bool> dic = new Dictionary<string, bool>();
-        //    if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(dir))
-        //    {
-        //        dic.Add(sort, dir == "ASC" ? true : false);
-        //    }
-        //    var users = _userService.GetUserByFirst(
-        //        model.SeachFirstName,
-        //        page - 1,
-        //        limit,
-        //        dic);
-        //    return JsonList<UserModel>(
-        //        users.Select(UserModel.Prepare).ToArray(),
-        //        users.TotalCount);
-        //}
     }
 }

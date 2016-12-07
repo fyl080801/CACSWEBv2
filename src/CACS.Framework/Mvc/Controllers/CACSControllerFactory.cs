@@ -9,14 +9,21 @@ namespace CACS.Framework.Mvc.Controllers
     {
         protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
         {
-            var isRegisted = EngineContext.Current.ContainerManager.IsRegistered(controllerType);
-            if (!isRegisted)
-                EngineContext.Current.ContainerManager.RegisterComponent(
-                    controllerType,
-                    controllerType,
-                    controllerType.FullName,
-                    ComponentLifeStyle.LifetimeScope);
-            return EngineContext.Current.ContainerManager.Resolve(controllerType) as IController;
+            if (controllerType != null)
+            {
+                var isRegisted = EngineContext.Current.ContainerManager.IsRegistered(controllerType);
+                if (!isRegisted)
+                    EngineContext.Current.ContainerManager.RegisterComponent(
+                        controllerType,
+                        controllerType,
+                        controllerType.FullName,
+                        ComponentLifeStyle.LifetimeScope);
+                return EngineContext.Current.ContainerManager.Resolve(controllerType) as IController;
+            }
+            else
+            {
+                return base.GetControllerInstance(requestContext, controllerType);
+            }
         }
     }
 }

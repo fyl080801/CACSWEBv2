@@ -52,5 +52,10 @@ namespace CACS.Framework.Mvc.Controllers
                 System.Text.Encoding.Unicode,
                 JsonRequestBehavior.AllowGet);
         }
+
+        protected JsonResult Error(string errors)
+        {
+            return Json(false, false, errors);
+        }
     }
 }
