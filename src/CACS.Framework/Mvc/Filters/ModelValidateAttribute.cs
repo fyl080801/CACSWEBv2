@@ -1,5 +1,6 @@
 ﻿using CACS.Framework.Mvc.ActionResults;
 using CACSLibrary;
+using CACSLibrary.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,13 @@ namespace CACS.Framework.Mvc.Filters
         {
             if (!filterContext.Controller.ViewData.ModelState.IsValid)
             {
-                var errors = filterContext.Controller.ViewData.ModelState.ToArray();
-                string message = string.Join(",", errors);
+                List<string> errors = new List<string>();
+                var states = filterContext.Controller.ViewData.ModelState.ToArray();
+                states.ForEach(state =>
+                {
+                    state.Value.Errors.ForEach(e => errors.Add(e.ErrorMessage));
+                });
+                string message = string.Join(",", errors.ToArray());
                 filterContext.Result = new ExceptionResult(new CACSException(message));
             }
         }

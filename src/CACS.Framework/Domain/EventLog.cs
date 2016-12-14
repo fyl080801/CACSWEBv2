@@ -9,7 +9,7 @@ using System.Text;
 namespace CACS.Framework.Domain
 {
     [Table("sys_EventLog")]
-    public class EventLog : BaseEntity<int>
+    public class EventLog : BaseEntity<int>, ICloneable
     {
         [Required(AllowEmptyStrings = false), MaxLength(50)]
         public virtual string SourceId { get; set; }
@@ -33,6 +33,28 @@ namespace CACS.Framework.Domain
         public virtual User User { get; set; }
 
         public virtual EventTypes EventType { get; set; }
+
+        public object Clone()
+        {
+            return new EventLog()
+            {
+                EventData = this.EventData,
+                EventName = this.EventName,
+                EventTime = this.EventTime,
+                EventType = this.EventType,
+                Id = this.Id,
+                IpAddress = this.IpAddress,
+                SourceId = this.SourceId,
+                SourceName = this.SourceName,
+                UserId = this.UserId,
+                User = new User()
+                {
+                    FirstName = this.User.FirstName,
+                    LastName = this.User.LastName,
+                    UserName = this.User.UserName
+                }
+            };
+        }
     }
 
     public enum EventTypes

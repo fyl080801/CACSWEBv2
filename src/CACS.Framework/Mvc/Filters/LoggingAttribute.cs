@@ -3,6 +3,7 @@ using CACS.Framework.Interfaces;
 using CACSLibrary.Infrastructure;
 using CACSLibrary.Plugin;
 using System;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace CACS.Framework.Mvc.Filters
@@ -63,8 +64,11 @@ namespace CACS.Framework.Mvc.Filters
         {
             if (context.Controller.ViewData.ModelState.IsValid)
             {
-                var log = EngineContext.Current.Resolve<ILogService>();
-                log.AddLog(BuildLog());
+                Task.Run(() =>
+                {
+                    var log = EngineContext.Current.Resolve<ILogService>();
+                    log.AddLog(BuildLog());
+                });
             }
         }
 
