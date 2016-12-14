@@ -15,14 +15,15 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">实例</label>
                 <div class="col-sm-5">
-                    <select name="DatabaseInstance" class="form-control">
+                    @*<select name="DatabaseInstance" class="form-control">
                         @{
                             if (!string.IsNullOrEmpty(Model.DatabaseInstance))
                             {
                                 @Html.Raw("<option selected=\"selected\" value=\"" + Model.DatabaseInstance + "\">" + Model.DatabaseInstance + "</option>")
                             }
                         }
-                    </select>
+                    </select>*@
+                    <input type="text" name="DatabaseInstance" class="form-control" placeholder="数据库实例" value="@Model.DatabaseInstance"/>
                 </div>
                 <span class="col-sm-5 control-label"></span>
             </div>
