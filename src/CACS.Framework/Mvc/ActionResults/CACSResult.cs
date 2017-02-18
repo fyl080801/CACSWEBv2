@@ -6,7 +6,12 @@ namespace CACS.Framework.Mvc.ActionResults
     {
         public override void ExecuteResult(ControllerContext context)
         {
-            ActionResult result = context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest" ? GetAjaxResult(context) : GetRequestResult(context);
+            var httprequest = context.HttpContext.Request.Headers["X-Requested-With"];
+            var jsonrequest = context.HttpContext.Request.Headers["Content-Type"];
+            ActionResult result = (httprequest != null && httprequest.Contains("XMLHttpRequest"))
+                || (jsonrequest != null && jsonrequest.Contains("application/json"))
+                ? GetAjaxResult(context)
+                : GetRequestResult(context);
             result.ExecuteResult(context);
         }
 

@@ -178,6 +178,8 @@
     <Compile Include="Identity\UserClaim.cs" />
     <Compile Include="Identity\UserLogin.cs" />
     <Compile Include="Identity\UserRole.cs" />
+    <Compile Include="Mvc\CACSValueProviderFactory.cs" />
+    <Compile Include="Mvc\FormJsonValueProvider.cs" />
     <Compile Include="Mvc\IListModelProvider.cs" />
     <Compile Include="Mvc\IModelProvider.cs" />
     <Compile Include="Mvc\ModelProvider\DefaultListModelProvider.cs" />

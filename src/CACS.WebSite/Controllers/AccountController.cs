@@ -46,10 +46,7 @@ namespace CACS.WebSite.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    {
-                        HttpContext.User = new FakePrincipal(new FakeIIdentity(model.Username));
-                        return Json(true);
-                    }
+                    return Json(true);
                 case SignInStatus.LockedOut:
                     throw new CACSException("用户已锁定");
                 case SignInStatus.RequiresVerification:

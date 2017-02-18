@@ -37,15 +37,23 @@ namespace CACS.Framework.Identity
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString(globalProfile.LoginUrl),
+                ExpireTimeSpan = TimeSpan.FromMinutes(globalProfile.LoginTimeout),
                 Provider = new CookieAuthenticationProvider
                 {
                     // 当用户登录时使应用程序可以验证安全戳。
                     // 这是一项安全功能，当你更改密码或者向帐户添加外部登录名时，将使用此功能。
                     OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User, int>(
                         validateInterval: TimeSpan.FromMinutes(globalProfile.LoginTimeout),
-                        regenerateIdentityCallback: (manager, user) => user.GenerateUserIdentityAsync(manager),
-                        getUserIdCallback: (claim) => int.Parse(claim.GetUserId()))
-                }
+                        regenerateIdentityCallback: (manager, user) =>
+                        {
+                            return user.GenerateUserIdentityAsync(manager);
+                        },
+                        getUserIdCallback: (claim) =>
+                        {
+                            return int.Parse(claim.GetUserId());
+                        })
+                },
+                CookieName = ".CACSWEB"
             });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 

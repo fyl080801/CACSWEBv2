@@ -20,7 +20,7 @@ namespace CACS.WebSite
             EngineContext.Reset(new CACSWebEngine());
             EngineContext.Current.Initialize(ConfigurationManager.GetSection("cacsConfig") as CACSConfig);
 
-
+            ValueProviderFactories.Factories.Add(new CACSValueProviderFactory());
             ModelBinders.Binders.Add(typeof(BaseModel), new CACSModelBinder());
             DependencyResolver.SetResolver(new CACSDependencyResolver());
             ControllerBuilder.Current.SetControllerFactory(new CACSControllerFactory());
