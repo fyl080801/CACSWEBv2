@@ -126,6 +126,7 @@ namespace CACS.WebSite.Controllers
                     Id = item.Id,
                     Username = item.Username,
                     PersonalName = item.PersonalName,
+                    Email = item.Email
                 }).ToArray(),
                 users.TotalCount);
         }
@@ -171,6 +172,7 @@ namespace CACS.WebSite.Controllers
                     Id = item.Id,
                     Username = item.UserName,
                     PersonalName = item.PersonalName,
+                    Email = item.Email
                 }).ToArray(),
                 users.TotalCount);
         }

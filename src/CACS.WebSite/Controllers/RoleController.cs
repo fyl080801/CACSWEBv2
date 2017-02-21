@@ -186,6 +186,42 @@ namespace CACS.WebSite.Controllers
             return Json(true);
         }
 
+        [AccountTicket]
+        public ActionResult RoleMembers(ListModel model, int id)
+        {
+            var role = _roleManager.FindById(id);
+            if (role == null)
+                throw new CACSException("找不到角色");
+            var roleusers = role.Users.Select(r => r.UserId).ToArray();
+            var query = _userManager.Users.Where(e => roleusers.Contains(e.Id));
+            if (!string.IsNullOrEmpty(model.Search))
+                query = query.Where(m => m.FirstName.Contains(model.Search) || m.LastName.Contains(model.Search));
+            if (model.Sort.Count > 0)
+            {
+                model.Sort.ForEach(sortItem =>
+                {
+                    var order = sortItem.Value.Equals("asc", StringComparison.InvariantCultureIgnoreCase) ? true : false;
+                    var key = sortItem.Key == "Username" ? "UserName" : sortItem.Key;
+                    if (key == "PersonalName")
+                    {
+                        query = QueryBuilder.DataSorting(query, "LastName", order);
+                        query = QueryBuilder.DataSorting(query, "FirstName", order);
+                    }
+                    else
+                    {
+                        query = QueryBuilder.DataSorting(query, key, order);
+                    }
+                });
+            }
+            else
+            {
+                query = query.OrderBy(m => m.LastName);
+            }
+            var result = new PagedList<User>(query, model.Page - 1, model.Limit) ??
+                new PagedList<User>(new List<User>(), model.Page - 1, model.Limit);
+            return JsonList(result.Select(UserInfo.Prepare).ToArray(), result.TotalCount);
+        }
+
         [AccountTicket(AuthorizeId = "/Role/Save")]
         public ActionResult Members(ListModel model, int id)
         {
