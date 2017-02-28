@@ -43,29 +43,6 @@ namespace CACS.WebSite.Controllers
             return JsonList(query.Select(RoleModel.Prepare).ToArray());
         }
 
-        //[AccountTicket(AuthorizeName = "创建", Group = "角色管理"), HttpPost, Logging("创建角色")]
-        //public async Task<ActionResult> Create(RoleModel model)
-        //{
-        //    var role = new Role()
-        //    {
-        //        Name = model.RoleName,
-        //        Description = model.Description
-        //    };
-        //    var result = await _roleManager.CreateAsync(role);
-        //    if (!result.Succeeded)
-        //        throw new CACSException(string.Join(", ", result.Errors.ToArray()));
-        //    return Json(role.Id);
-        //}
-
-        //[AccountTicket(AuthorizeName = "编辑", Group = "角色管理"), HttpPost]
-        //public async Task<ActionResult> Update(RoleModel model)
-        //{
-        //    var result = await _roleManager.UpdateAsync(model.ToDomain());
-        //    if (!result.Succeeded)
-        //        throw new CACSException(string.Join(", ", result.Errors.ToArray()));
-        //    return Json(model.Id);
-        //}
-
         [AccountTicket(AuthorizeName = "编辑", Group = "角色管理")]
         public async Task<ActionResult> Save(RoleModel model)
         {
@@ -167,7 +144,7 @@ namespace CACS.WebSite.Controllers
         public ActionResult Authorizes(int id)
         {
             var roleAuthorizes = _accountService.GetRoleAuthorizes(id);
-            return JsonList<RoleAuthorizeModel>(roleAuthorizes.ToArray());
+            return JsonList(roleAuthorizes.ToArray());
         }
 
         [AccountTicket(AuthorizeId = "/Role/Save")]
