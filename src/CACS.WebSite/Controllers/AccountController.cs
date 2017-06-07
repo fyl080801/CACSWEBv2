@@ -89,6 +89,7 @@ namespace CACS.WebSite.Controllers
                 return Error("用户不存在");
             var passwordhash = _userManager.PasswordHasher.HashPassword(model.Password);
             await _userStore.SetPasswordHashAsync(user, passwordhash);
+            await _userStore.UpdateAsync(user);
             return Json(true);
         }
     }
